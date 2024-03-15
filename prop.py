@@ -75,109 +75,71 @@ paper_presets_data = {
 def pixels_from_print(ps):
     tipo, dim_w, dim_h = paper_presets_data[ps.preset]
     px=bpy.context.scene.render
-    if ps.unit_from == "CM_TO_PIXELS":
-        if tipo == "custom":
+
+    if tipo == "custom":
+        if ps.unit_from == "CM_TO_PIXELS":
             dim_w = ps.width
             dim_h = ps.height
             ps.width = dim_w
             ps.height = dim_h
 
-            ps.px_x = math.ceil((ps.width * ps.dpi) / 2.54)
-            ps.px_y = math.ceil((ps.height * ps.dpi) / 2.54)
-        elif tipo != "custom" and ps.orientation == "Horizontal":#横宽
-            if ps.adaptive_scale:
-                if px.resolution_y>=px.resolution_x or px.resolution_y/px.resolution_x>=dim_h/dim_w:
-                    ps.px_x = round(np.prod(np.array([ps.width ,ps.dpi,px.resolution_x])) / np.multiply(2.54,px.resolution_y))
-                    ps.px_y = round(np.multiply(ps.height ,ps.dpi) / numpy.array(2.54)) #先求y
-                    ps.width = np.multiply(dim_h, px.resolution_x) / np.array(px.resolution_y)
-                    ps.height = dim_h
-                elif px.resolution_y/px.resolution_x<dim_h/dim_w:
-                    # ps.px_y = round(np.multiply(ps.height , ps.dpi) / np.array(2.54))
-                    ps.px_y = round(np.prod(np.array([ps.width , ps.dpi,px.resolution_y])) / np.multiply(2.54 , px.resolution_x))
-                    ps.px_x = round(np.multiply(ps.width , ps.dpi) / np.array(2.54))
-                    # ps.px_x = round((ps.height * ps.dpi) / 2.54 * px.resolution_x / px.resolution_y)
-                    ps.height = dim_h * px.resolution_y / px.resolution_x
-                    ps.width = dim_w
-            else:
-                ps.width = dim_h
-                ps.height = dim_w
-                ps.px_x = math.ceil((ps.width * ps.dpi) / 2.54)
-                ps.px_y = math.ceil((ps.height * ps.dpi) / 2.54)
-        elif tipo != "custom" and ps.orientation == "Vertical":#竖
-            if ps.adaptive_scale:
-                if px.resolution_x>=px.resolution_y or px.resolution_x/px.resolution_y>=dim_w/dim_h:
-                    ps.px_x=round(np.multiply(ps.width ,ps.dpi) / numpy.array(2.54))
-                    ps.px_y=round(np.prod(np.array([ps.width ,ps.dpi,px.resolution_y])) / np.multiply(2.54,px.resolution_x))
-                    ps.width = dim_w
-                    ps.height = np.multiply(dim_w,px.resolution_y) / np.array(px.resolution_x)
-
-                elif px.resolution_x/px.resolution_y<dim_w/dim_h:
-                    pass
-                    ps.px_y=round((ps.height * ps.dpi) / 2.54)
-                    ps.px_x=round((ps.height * ps.dpi) / 2.54*px.resolution_x/px.resolution_y)
-                    ps.width = dim_h* px.resolution_x / px.resolution_y
-                    ps.height = dim_h
-            else:
-                ps.width = dim_w
-                ps.height = dim_h
-                ps.px_x = math.ceil((ps.width * ps.dpi) / 2.54)
-                ps.px_y = math.ceil((ps.height * ps.dpi) / 2.54)
-
-    else:
-        if tipo=='custom':
+            ps.px_x = round((ps.width * ps.dpi) / 2.54)
+            ps.px_y = round((ps.height * ps.dpi) / 2.54)
+        elif ps.unit_from == "PIXELS_TO_CM":
             ps.width = (ps.px_x / ps.dpi) * 2.54
             ps.height = (ps.px_y / ps.dpi) * 2.54
-
-        if tipo != "custom" and ps.orientation == "Horizontal":#横
-            if ps.adaptive_scale:
-                if px.resolution_y >= px.resolution_x or px.resolution_y / px.resolution_x >= dim_h / dim_w:
-                    ps.px_x = round(
-                        np.prod(np.array([ps.width, ps.dpi, px.resolution_x])) / np.multiply(2.54, px.resolution_y))
-                    ps.px_y = round(np.multiply(ps.height, ps.dpi) / numpy.array(2.54))  # 先求y
-                    ps.width = np.multiply(dim_h, px.resolution_x) / np.array(px.resolution_y)
-                    ps.height = dim_h
-                elif px.resolution_y / px.resolution_x < dim_h / dim_w:
-                    # ps.px_y = round(np.multiply(ps.height , ps.dpi) / np.array(2.54))
-                    ps.px_y = round(
-                        np.prod(np.array([ps.width, ps.dpi, px.resolution_y])) / np.multiply(2.54, px.resolution_x))
-                    ps.px_x = round(np.multiply(ps.width, ps.dpi) / np.array(2.54))
-                    # ps.px_x = round((ps.height * ps.dpi) / 2.54 * px.resolution_x / px.resolution_y)
-                    ps.height = dim_h * px.resolution_y / px.resolution_x
-                    ps.width = dim_w
-            else:
-                ps.width = dim_h
-                ps.height = dim_w
-                ps.px_x = math.ceil((ps.width * ps.dpi) / 2.54)
-                ps.px_y = math.ceil((ps.height * ps.dpi) / 2.54)
-        elif tipo != "custom" and ps.orientation == "Vertical":#竖
-            if ps.adaptive_scale:
-                if px.resolution_x>=px.resolution_y or px.resolution_x/px.resolution_y>=dim_w/dim_h:
-                    ps.px_x=round(np.multiply(ps.width ,ps.dpi) / numpy.array(2.54))
-                    ps.px_y=round(np.prod(np.array([ps.width ,ps.dpi,px.resolution_y])) / np.multiply(2.54,px.resolution_x))
-                    ps.width = dim_w
-                    ps.height = np.multiply(dim_w,px.resolution_y) / np.array(px.resolution_x)
-
-                elif px.resolution_x/px.resolution_y<dim_w/dim_h:
-                    pass
-                    ps.px_y=round((ps.height * ps.dpi) / 2.54)
-                    ps.px_x=round((ps.height * ps.dpi) / 2.54*px.resolution_x/px.resolution_y)
-                    ps.width = dim_h* px.resolution_x / px.resolution_y
-                    ps.height = dim_h
-            else:
-                ps.width = dim_w
+    elif tipo != "custom" and ps.orientation == "Horizontal":#横宽
+        if ps.adaptive_scale:
+            if px.resolution_y>=px.resolution_x or px.resolution_y/px.resolution_x>=dim_h/dim_w:
+                ps.px_x = round(np.prod(np.array([ps.width ,ps.dpi,px.resolution_x])) / np.multiply(2.54,px.resolution_y))
+                ps.px_y = round(np.multiply(ps.height ,ps.dpi) / numpy.array(2.54)) #先求y
+                ps.width = np.multiply(dim_h, px.resolution_x) / np.array(px.resolution_y)
                 ps.height = dim_h
-                ps.px_x = math.ceil((ps.width * ps.dpi) / 2.54)
-                ps.px_y = math.ceil((ps.height * ps.dpi) / 2.54)
+            elif px.resolution_y/px.resolution_x<dim_h/dim_w:
+                # ps.px_y = round(np.multiply(ps.height , ps.dpi) / np.array(2.54))
+                ps.px_y = round(np.prod(np.array([ps.width , ps.dpi,px.resolution_y])) / np.multiply(2.54 , px.resolution_x))
+                ps.px_x = round(np.multiply(ps.width , ps.dpi) / np.array(2.54))
+                # ps.px_x = round((ps.height * ps.dpi) / 2.54 * px.resolution_x / px.resolution_y)
+                ps.height = dim_h * px.resolution_y / px.resolution_x
+                ps.width = dim_w
+        else:
+            ps.width = dim_h
+            ps.height = dim_w
+            ps.px_x = round((ps.width * ps.dpi) / 2.54)
+            ps.px_y = round((ps.height * ps.dpi) / 2.54)
+    elif tipo != "custom" and ps.orientation == "Vertical":#竖
+        if ps.adaptive_scale:
+            if px.resolution_x>=px.resolution_y or px.resolution_x/px.resolution_y>=dim_w/dim_h:
+                ps.px_x=round(np.multiply(ps.width ,ps.dpi) / numpy.array(2.54))
+                ps.px_y=round(np.prod(np.array([ps.width ,ps.dpi,px.resolution_y])) / np.multiply(2.54,px.resolution_x))
+                ps.width = dim_w
+                ps.height = np.multiply(dim_w,px.resolution_y) / np.array(px.resolution_x)
 
-        # ps.width = (ps.px_x / ps.dpi) * 2.54
-        # ps.height = (ps.px_y / ps.dpi) * 2.54
+            elif px.resolution_x/px.resolution_y<dim_w/dim_h:
+                pass
+                ps.px_y=round((ps.height * ps.dpi) / 2.54)
+                ps.px_x=round((ps.height * ps.dpi) / 2.54*px.resolution_x/px.resolution_y)
+                ps.width = dim_h* px.resolution_x / px.resolution_y
+                ps.height = dim_h
+        else:
+            ps.width = dim_w
+            ps.height = dim_h
+            ps.px_x = round((ps.width * ps.dpi) / 2.54)
+            ps.px_y = round((ps.height * ps.dpi) / 2.54)
 
 
+
+def update_scale(s):
+    ps = bpy.context.scene.my_custom_properties
+    if ps.preset== "custom_1_1":
+        ps.adaptive_scale=False
+        ps.method='Accurate'
 def update_settings_cb(self, context):
     # annoying workaround for recursive call
     if update_settings_cb.level is False:
         update_settings_cb.level = True
         pixels_from_print(self)
+        update_scale(self)
         update_settings_cb.level = False
 
 update_settings_cb.level = False
@@ -191,6 +153,7 @@ class MyCustomProperties(PropertyGroup):
                 ("PIXELS_TO_CM", "Pixel -> CM", "Pixels to Centermeters")
                 ),
             default="CM_TO_PIXELS",
+
             )
     # 定义两个整型属性
     px_x: IntProperty(
@@ -250,14 +213,10 @@ class MyCustomProperties(PropertyGroup):
     adaptive_scale: BoolProperty(
         name="Adaptive scaling",
         description="Adaptive scaling according to the selected preset",
-        default=False
+        default=False,
+        update=update_settings_cb,
     )
-    # turn_on: BoolProperty(
-    #     name="Adaptive scaling",
-    #     description="Adaptive scaling according to the selected preset",
-    #     default=False
-    # )
-    # 定义一个枚举型属性
+
     preset: EnumProperty(
         name="Preset",
         description="Rendering preset",
@@ -280,10 +239,11 @@ class MyCustomProperties(PropertyGroup):
         name="Method",
         description="Rendering preset",
         items=[
-            ('Simple', "简易", "Description of option A"),
+            ('Simple', "快速", "Description of option A"),
             ('Accurate', "精确", "Description of option B"),
         ],
         default="Simple",
+        update=update_settings_cb,
     )
 
 
