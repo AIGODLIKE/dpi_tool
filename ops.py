@@ -1,4 +1,5 @@
 import bpy,subprocess,sys,os
+import numpy as np
 from bpy.types import Operator
 import importlib.util
 
@@ -57,8 +58,33 @@ def get_file_extension():
         return extension
     else:
         return False
+
+class Switch_w_h(bpy.types.Operator):
+    """长和宽互换"""
+    bl_idname = "render.switch_w_h"
+    bl_label = "switch_w_h"
+
+    def execute(self, context):
+        ps=bpy.context.scene.my_custom_properties
+        opposite=None
+        if ps.width>=ps.height:
+            ps.orientation='Horizontal'
+            opposite='Vertical'
+        else:
+            ps.orientation = 'Vertical'
+            opposite = 'Horizontal'
+        if ps.unit_from=='CM_TO_PIXELS':
+            temp=ps.width
+            ps.width=ps.height
+            ps.height=temp
+        else:
+            temp=ps.px_x
+            ps.px_x=ps.px_y
+            ps.px_y=temp
+        ps.orientation=opposite
+        return {'FINISHED'}
 class Process_images(bpy.types.Operator):
-    """我的简单操作"""
+    """设置路径,dpi"""
     bl_idname = "file.process_images"
     bl_label = "Process_images"
 
@@ -121,7 +147,7 @@ class Install_pillow_ops(Operator):
         return {'FINISHED'}
 
 class SetRenderBox(bpy.types.Operator):
-    """设置渲染框大小"""
+    """无视当前比例直接设置渲染框大小为目标大小(可能会改变比例)"""
     bl_idname = "view3d.set_render_box"
     bl_label = "Set Render box"
 
@@ -133,15 +159,22 @@ class SetRenderBox(bpy.types.Operator):
     def execute(self, context):
         ps = bpy.context.scene.my_custom_properties
         px=bpy.context.scene.render
-        px.resolution_x =ps.px_x
-        px.resolution_y=ps.px_y
+        if px.resolution_percentage !=100:
+            px.resolution_x =round(np.multiply(ps.px_x,100)/px.resolution_percentage)
+            px.resolution_y =round(np.multiply(ps.px_y,100)/px.resolution_percentage)
+            # px.resolution_y=ps.px_y
+        else:
+            px.resolution_x = ps.px_x
+            px.resolution_y = ps.px_y
         self.report({'INFO'}, "已同步")
         return {'FINISHED'}
 def register():
+    bpy.utils.register_class(Switch_w_h)
     bpy.utils.register_class(Process_images)
     bpy.utils.register_class(SetRenderBox)
     bpy.utils.register_class(Install_pillow_ops)
 def unregister():
+    bpy.utils.unregister_class(Switch_w_h)
     bpy.utils.unregister_class(Process_images)
     bpy.utils.unregister_class(SetRenderBox)
     bpy.utils.unregister_class(Install_pillow_ops)

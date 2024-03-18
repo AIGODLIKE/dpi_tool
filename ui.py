@@ -1,6 +1,6 @@
 
 import bpy
-from .ops import Install_pillow_ops,SetRenderBox
+from .ops import Install_pillow_ops,SetRenderBox,Switch_w_h
 
 # 定义插件的首选项类
 class Install_pillow_ui(bpy.types.AddonPreferences):
@@ -10,27 +10,34 @@ class Install_pillow_ui(bpy.types.AddonPreferences):
         layout = self.layout
         try:
             from PIL import Image
-            layout.label(text="所需依赖已安装,请重启blender")
+            layout.label(text="The required dependencies have been installed, please restart Blender")
         except:
-            layout.label(text="请先安装插件所需依赖,安装完成后重启blender")
-            layout.operator(Install_pillow_ops.bl_idname, text="安装pillow库")
+            layout.label(text="Please install the dependencies required by the plugin first, restart Blender after installation is complete")
+            layout.operator(Install_pillow_ops.bl_idname, text="Install the Pillow library")
 def sna_add_to_render_pt_format_E810E(self, context):
     if not (False):
         ps = bpy.context.scene.my_custom_properties
         layout = self.layout.box()
+        on = layout.column().row(heading='', align=False)
+        on.use_property_split = False
+        on.use_property_decorate = False
+        on.scale_x = 1.0
+        on.scale_y = 1.0
+        on.alignment = 'Expand'.upper()
+        on.prop(ps, 'switch', text="Enable standard DPI output",emboss=True, toggle=True)
         root = layout.column(heading='', align=False)
         root.alert = False
-        root.enabled = True
-        root.active = True
+        root.enabled = ps.switch
+        root.active = ps.switch
         root.use_property_split = False
         root.use_property_decorate = False
         root.scale_x = 1.0
         root.scale_y = 1.0
         root.alignment = 'Expand'.upper()
-        if not True: root.operator_context = "EXEC_DEFAULT"
+
         input=root.row(heading='', align=False)
         input.alignment = 'Expand'.upper()
-        input.label(text='输入:')
+        input.label(text='Input:')
         input_p = input.row(heading='', align=False)
         input_p.alert = False
         input_p.enabled = True
@@ -43,7 +50,7 @@ def sna_add_to_render_pt_format_E810E(self, context):
         # input_p.prop(ps, 'dpi', text='', icon_value=0, emboss=True)
         input_p.prop(ps, 'unit_from', text='')
         pre = root.row(heading='', align=False)
-        pre.label(text='预设:')
+        pre.label(text='Preset:')
         pre_p = pre.row(heading='', align=False)
         pre_p.alert = False
         pre_p.enabled = True
@@ -54,25 +61,7 @@ def sna_add_to_render_pt_format_E810E(self, context):
         pre_p.scale_y = 1.0
         pre_p.alignment = 'Expand'.upper()
         pre_p.prop(ps, 'preset', text='')
-        # pre.alert = False
-        # pre.enabled = True
-        # pre.active = True
-        # pre.use_property_split = False
-        # pre.use_property_decorate = False
-        # pre.scale_x = 1.0
-        # pre.scale_y = 1.0
-        # pre.alignment = 'Expand'.upper()
-        # if not True: pre.operator_context = "EXEC_DEFAULT"
-        # pre.prop(ps, 'unit_from', text='')
-        # # button=pre.row()
-        # # button.enabled = ps.method=='Accurate'
-        # # button.active = ps.method=='Accurate'
-        # pre.operator(SetRenderBox.bl_idname,  text='同步', icon_value=692, emboss=True,)
-        # ad=pre.row()
-        # ad.enabled = not ps.preset=='custom_1_1'
-        # ad.active = not ps.preset=='custom_1_1'
-        # ad.prop(ps, 'adaptive_scale', text='', icon_value=408, emboss=True, toggle=ps.adaptive_scale)
-        # pre.prop(ps, 'preset', text='')
+
         cm = root.row(heading='', align=False)
         cm.alert = False
         cm.enabled = True
@@ -82,8 +71,7 @@ def sna_add_to_render_pt_format_E810E(self, context):
         cm.scale_x = 1.0
         cm.scale_y = 1.0
         cm.alignment = 'Expand'.upper()
-        if not True: cm.operator_context = "EXEC_DEFAULT"
-        cm.prop(ps, 'orientation',text='')
+        cm.operator(Switch_w_h.bl_idname,text='Switch',emboss=True,)
         wh = cm.row(heading='', align=True)
         wh.alert = False
         wh.enabled = (ps.unit_from=='CM_TO_PIXELS') and ps.preset=='custom_1_1'
@@ -94,8 +82,8 @@ def sna_add_to_render_pt_format_E810E(self, context):
         wh.scale_y = 1.0
         wh.alignment = 'Expand'.upper()
         if not True: wh.operator_context = "EXEC_DEFAULT"
-        wh.prop(ps, 'width', text='横宽:', icon_value=408, emboss=True,)
-        wh.prop(ps, 'height', text='竖长:', icon_value=408, emboss=True,)
+        wh.prop(ps, 'width', text='Width:', icon_value=408, emboss=True,)
+        wh.prop(ps, 'height', text='Height:', icon_value=408, emboss=True,)
         dpi = root.row(heading='', align=False)
         dpi.alert = False
         dpi.enabled = True
@@ -105,7 +93,7 @@ def sna_add_to_render_pt_format_E810E(self, context):
         dpi.scale_x = 1.0
         dpi.scale_y = 1.0
         dpi.alignment = 'Expand'.upper()
-        dpi.label(text='分辨率:', icon_value=0)
+        dpi.label(text='DPI:', icon_value=0)
         dpi_p = dpi.row(heading='', align=False)
         dpi_p.alert = False
         dpi_p.enabled = True
@@ -127,7 +115,7 @@ def sna_add_to_render_pt_format_E810E(self, context):
         output.scale_y = 1.0
         output.alignment = 'Expand'.upper()
         if not True: output.operator_context = "EXEC_DEFAULT"
-        output.label(text='像素:', icon_value=0)
+        output.label(text='Pixels:', icon_value=0)
         output_p = output.row(heading='', align=True)
         output_p.alert = False
         output_p.enabled = (ps.unit_from=='PIXELS_TO_CM') and ps.preset=='custom_1_1'
@@ -150,7 +138,7 @@ def sna_add_to_render_pt_format_E810E(self, context):
         method.scale_y = 1.0
         method.alignment = 'Expand'.upper()
         if not True: method.operator_context = "EXEC_DEFAULT"
-        method.label(text='缩放:', icon_value=0)
+        method.label(text='Scale:', icon_value=0)
         method_p = method.row(heading='', align=True)
         method_p.alert = False
         method_p.enabled = not ps.preset=='custom_1_1'
@@ -162,14 +150,37 @@ def sna_add_to_render_pt_format_E810E(self, context):
         method_p.alignment = 'Expand'.upper()
         if not True: method_p.operator_context = "EXEC_DEFAULT"
         method_p.prop(ps, 'method',  expand=True,)
+        output = root.row()
+        output.label(text='Output:', icon_value=0)
+        output_p=output.row(align=True)
+        output_p.scale_x = 100.0
+        output_p.scale_y = 1.0
+        output_p_a=output_p.row(align=True)
+        output_p_a.enabled = not ps.preset=='custom_1_1'
+        output_p_a.active = not ps.preset=='custom_1_1'
+        output_p_a.prop(ps, 'adaptive_scale', text="Proportional scaling", icon_value=408, emboss=True, toggle=True)
+
+        output_p_o=output_p.row(align=True)
+        output_p_o.operator(SetRenderBox.bl_idname,  text="Force synchronization", icon_value=692, emboss=True,)
         note = root.row()
         filepath = bpy.context.scene.render.filepath
         if not bpy.data.is_saved :
-            note.label(text='请先保存文件,并设置输出路径')
+            note.label(text='Please save the file first and set the output path')
+        elif bpy.context.scene.use_nodes:
+            from .ops import check_cp_output_path
+            if check_cp_output_path():
+                node,path=check_cp_output_path()
+                if node.base_path == '/tmp\\':
+                    note.label(text='The output path is in c:/tmp/')
+                elif node.base_path == '//':
+                    note.label(text='The output path is in the current file directory')
+            else:
+                note.label(text='Please add an output node and set the output path')
+
         elif filepath=='/tmp\\':
-            note.label(text='初始输出路径在c:/tmp/')
+            note.label(text='The output path is in c:/tmp/')
         elif filepath=='':
-            note.label(text='请设置输出路径')
+            note.label(text='Please set the output path')
 
 # 注册和注销函数
 def register():

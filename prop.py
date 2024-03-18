@@ -4,7 +4,7 @@ import numpy as np
 from bpy.props import IntProperty, BoolProperty, EnumProperty, StringProperty,FloatProperty
 from bpy.types import PropertyGroup
 paper_presets = (
-    ("custom_1_1", "custom(cm)", ""),
+    ("custom_1_1", "Custom", ""),
     ("A0_84.1_118.9", "A0 (84.1x118.9 cm)", ""),
     ("A1_59.4_84.1", "A1 (59.4x84.1 cm)", ""),
     ("A2_42.0_59.4", "A2 (42.0x59.4 cm)", ""),
@@ -88,7 +88,7 @@ def pixels_from_print(ps):
         elif ps.unit_from == "PIXELS_TO_CM":
             ps.width = (ps.px_x / ps.dpi) * 2.54
             ps.height = (ps.px_y / ps.dpi) * 2.54
-    elif tipo != "custom" and ps.orientation == "Horizontal":#横宽
+    elif tipo != "custom" and ps.orientation=='Horizontal':#横宽
         if ps.adaptive_scale:
             if px.resolution_y>=px.resolution_x or px.resolution_y/px.resolution_x>=dim_h/dim_w:
                 ps.px_x = round(np.prod(np.array([ps.width ,ps.dpi,px.resolution_x])) / np.multiply(2.54,px.resolution_y))
@@ -158,7 +158,7 @@ class MyCustomProperties(PropertyGroup):
     # 定义两个整型属性
     px_x: IntProperty(
         name="",
-        description="Expected pixel size",
+        description="Final output x-axis pixels",
         default=1920,
         min=1,
         max=999999,
@@ -167,7 +167,7 @@ class MyCustomProperties(PropertyGroup):
 
     px_y: IntProperty(
         name="",
-        description="Expected pixel size",
+        description="Final output y-axis pixels",
         default=1080,
         min=1,
         max=999999,
@@ -175,7 +175,7 @@ class MyCustomProperties(PropertyGroup):
     )
     dpi: IntProperty(
         name="",
-        description="Expected pixel size",
+        description="The number of pixels per inch",
         default=72,
         min=1,
         max=2000,
@@ -186,7 +186,7 @@ class MyCustomProperties(PropertyGroup):
     )
     width: FloatProperty(
         name="",
-        description="",
+        description="Paper width",
         default=21.0,
         min=0.001,
         max=999999.0,
@@ -199,7 +199,7 @@ class MyCustomProperties(PropertyGroup):
 
     height: FloatProperty(
         name="",
-        description="",
+        description="Paper height",
         default=29.7,
         min=0.001,
         max=999999.0,
@@ -212,24 +212,29 @@ class MyCustomProperties(PropertyGroup):
     # 定义一个布尔型属性
     adaptive_scale: BoolProperty(
         name="Adaptive scaling",
-        description="Adaptive scaling according to the selected preset",
+        description="Proportional scaling: Similar to enlarging images in Photoshop, the current XY is scaled proportionally up/down until one side matches the short side of the paper.",
         default=False,
         update=update_settings_cb,
     )
-
+    switch: BoolProperty(
+        name="switch",
+        description="Enable or disable plugins",
+        default=False,
+        update=update_settings_cb,
+    )
     preset: EnumProperty(
         name="Preset",
-        description="Rendering preset",
+        description="",
         items=paper_presets,
         default="custom_1_1",
         update=update_settings_cb,
     )
     orientation: EnumProperty(
         name="Page Orientation",
-        description="Rendering preset",
+        description="Page Orientation",
         items=[
-            ('Vertical', "纵", "Description of option A"),
-            ('Horizontal', "横", "Description of option B"),
+            ('Vertical', "Vertical", "Vertical length"),
+            ('Horizontal', "Horizontal", "Horizontal length"),
         ],
         default="Vertical",
         update=update_settings_cb,
@@ -239,10 +244,10 @@ class MyCustomProperties(PropertyGroup):
         name="Method",
         description="Rendering preset",
         items=[
-            ('Simple', "快速", "Description of option A"),
-            ('Accurate', "精确", "Description of option B"),
+            ('Simple', "Simple", "Output a small image, interpolate for enlargement"),
+            ('Accurate', "Accurate", "Output actual size image"),
         ],
-        default="Simple",
+        default="Accurate",
         update=update_settings_cb,
     )
 
