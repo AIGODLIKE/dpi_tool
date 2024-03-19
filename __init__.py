@@ -1,7 +1,7 @@
 
 
 bl_info = {
-    "name" : "DPI输出助手",
+    "name" : "DPI_tool",
     "author" : "AIGODLIKE Community:cupcko",
     "description" : "",
     "blender" : (3, 0, 0),
