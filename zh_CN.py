@@ -37,5 +37,6 @@ data = {
     "The output path is in the current file directory": '输出路径在当前文件目录',
     "Please add an output node and set the output path": '请添加输出节点并设置输出路径',
     "Please set the output path": '请设置输出路径',
+    "Please check the output node for the output location": '输出位置请查看合成输出节点',
     'AIGODLIKE Community:cupcko': '幻之境：cupcko',
 }

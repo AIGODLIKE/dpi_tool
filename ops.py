@@ -24,18 +24,24 @@ def change_image_size(image_path,size):
         img=img.resize(size, Image.LANCZOS)
         img.save(image_path)
 def check_cp_output_path():
-    '''返回[输出节点,路径],如果没有输出节点返回False'''
+    '''返回nodes{'节点名':路径},如果没有输出节点返回False'''
     if bpy.context.scene.use_nodes and len(bpy.context.scene.node_tree.nodes):
+        nodes = {}
         for i in bpy.context.scene.node_tree.nodes:
+
             if i.type == 'OUTPUT_FILE':
                 if  i.base_path=='/tmp\\':
-                    num=bpy.context.scene.frame_current
-                    return [i,'C://'+i.base_path]
+                    nodes[i.name]='C:'+i.base_path
+                    # return [i,'C://'+i.base_path]
                 elif i.base_path=='':
-                    return False
+                    nodes[i.name]='C:\\'
+                    # return False
                 else:
-                    return [i,i.base_path]
-                # return 'C://'+i.base_path+'Image'+str(10000+num)[1:]+i.
+                    nodes[i.name]=i.base_path
+                    # return [i,i.base_path]
+                # print(i.base_path)
+                # print(i.name)
+        return nodes
     else:
         return False
 def check_pn_output_path():
@@ -48,13 +54,18 @@ def check_pn_output_path():
     else:
         return filepath
 def get_file_extension():
-    '''获取输出节点的文件格式字符串.xxx else None'''
+    '''获取输出节点的文件格式字符串.xxx else None 返回ext{'节点名':后缀名}'''
     temp=bpy.context.scene.render.image_settings.file_format
     res=check_cp_output_path()
     if res:
-        bpy.context.scene.render.image_settings.file_format=res[0].format.file_format
-        extension=bpy.context.scene.render.file_extension
-        bpy.context.scene.render.image_settings.file_format=temp
+        extension= {}
+        for i in res:
+            # res[i]
+            # bpy.context.scene.render.image_settings.file_format=res[0].format.file_format
+            bpy.context.scene.render.image_settings.file_format=bpy.context.scene.node_tree.nodes[i].format.file_format
+            ex=bpy.context.scene.render.file_extension
+            bpy.context.scene.render.image_settings.file_format=temp
+            extension[i]=ex
         return extension
     else:
         return False
@@ -90,21 +101,32 @@ class Process_images(bpy.types.Operator):
 
     def execute(self, context):
         # 获取渲染图片的路径
-        image_path = ''
+        image_path = []
         num = bpy.context.scene.frame_current
         if check_cp_output_path():
-            base_name, extension = os.path.splitext(check_cp_output_path()[1])
-            if os.path.isdir(check_cp_output_path()[1]):
-                image_path = check_cp_output_path()[1] + 'Image' + str(10000 + num)[1:] + get_file_extension()
-            elif extension == get_file_extension():
-                image_path = check_cp_output_path()[1]
+            nodes=check_cp_output_path()
+            ext = get_file_extension()
+            for node in nodes:
+                # if not nodes[node]:
+                    #切换节点
+                    #检测是否路径
+                if os.path.isdir(nodes[node]):
+
+                    path = nodes[node] + 'Image' + str(10000 + num)[1:] + ext[node]
+                    image_path.append(path)
+            # base_name, extension = os.path.splitext(check_cp_output_path()[1])
+            # if os.path.isdir(check_cp_output_path()[1]):
+            #     image_path = check_cp_output_path()[1] + 'Image' + str(10000 + num)[1:] + get_file_extension()
+            # elif extension == get_file_extension():
+            #     image_path = check_cp_output_path()[1]
         elif check_pn_output_path():
             base_name, extension = os.path.splitext(check_pn_output_path())
             if os.path.isdir(check_pn_output_path()):
-                image_path = check_pn_output_path() + 'Image' + str(10000 + num)[
+                path = check_pn_output_path() + 'Image' + str(10000 + num)[
                                                                 1:] + bpy.context.scene.render.file_extension
             elif extension == bpy.context.scene.render.file_extension:
-                image_path = check_pn_output_path()
+                path = check_pn_output_path()
+            image_path.append(path)
         else:
             # print('先设置图片路径')
             self.report({'WARNING'}, "先设置图片路径")
@@ -112,18 +134,20 @@ class Process_images(bpy.types.Operator):
         ps = bpy.context.scene.my_custom_properties
         # 设置想要的DPI值
         new_dpi = (ps.dpi, ps.dpi)
-        image = bpy.data.images['Render Result']
-        try:
-            image.save_render(filepath=image_path)
-        except:
-            pass
+        for i in image_path:
+            if not check_cp_output_path():
+                image = bpy.data.images['Render Result']
+                try:
+                    image.save_render(filepath=i)
+                except:
+                    print('图片保存失败')
 
-        # 缩放
-        if ps.adaptive_scale or ps.method == 'Simple':
-            change_image_size(image_path, (ps.px_x, ps.px_y))
-        # 更改图片DPI
-        change_image_dpi(image_path, new_dpi)
-        print(f'Rendered image DPI changed to {ps.dpi}')
+            # 缩放
+            if ps.adaptive_scale or ps.method == 'Simple':
+                change_image_size(i, (ps.px_x, ps.px_y))
+            # 更改图片DPI
+            change_image_dpi(i, new_dpi)
+            print(f'Rendered image DPI changed to {ps.dpi}')
 
 
 

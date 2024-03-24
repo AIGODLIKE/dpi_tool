@@ -169,11 +169,12 @@ def sna_add_to_render_pt_format_E810E(self, context):
         elif bpy.context.scene.use_nodes:
             from .ops import check_cp_output_path
             if check_cp_output_path():
-                node,path=check_cp_output_path()
-                if node.base_path == '/tmp\\':
-                    note.label(text='The output path is in c:/tmp/')
-                elif node.base_path == '//':
-                    note.label(text='The output path is in the current file directory')
+                pass
+                # node,path=check_cp_output_path()
+                # if node.base_path == '/tmp\\':
+                note.label(text='Please check the output node for the output location')
+                # elif node.base_path == '//':
+                #     note.label(text='The output path is in the current file directory')
             else:
                 note.label(text='Please add an output node and set the output path')
 
