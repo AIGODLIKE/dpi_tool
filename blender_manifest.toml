@@ -18,7 +18,7 @@ type = "add-on"
 permissions = ["files", "network"]
 
 # Optional link to documentation, support, source files, etc
-# website = "http://extensions.blender.org/add-ons/my-example-package/"
+ website = "https://github.com/AIGODLIKE/dpi_tool"
 
 # Optional list defined by Blender and server, see:
 # https://docs.blender.org/manual/en/dev/extensions/tags.html
@@ -35,6 +35,6 @@ license = [
 ]
 # Optional: required by some licenses.
 copyright = [
-  "2002-2024 Developer Name",
-  "1998 Company Name",
+  "2002-2024 Cupcko",
+  "2022 AIGODLIKE Community",
 ]

@@ -39,4 +39,8 @@ data = {
     "Please set the output path": '请设置输出路径',
     "Please check the output node for the output location": '输出位置请查看合成输出节点',
     'AIGODLIKE Community:cupcko': '幻之境：cupcko',
+    "Failed to save the image": '图片保存失败',
+    "Set the image path first": '先设置图片路径',
+    "Set the output node image path first": '先设置输出节点图片路径',
+    "The output path format is unrecognizable, please check the output path": '输出路径格式无法识别,请检查输出路径',
 }

@@ -29,7 +29,7 @@ def check_cp_output_path():
         nodes = {}
         for i in bpy.context.scene.node_tree.nodes:
 
-            if i.type == 'OUTPUT_FILE':
+            if i.type == 'OUTPUT_FILE' and i.inputs['Image'].is_linked:
                 if  i.base_path=='/tmp\\':
                     nodes[i.name]='C:'+i.base_path
                     # return [i,'C://'+i.base_path]
@@ -41,17 +41,25 @@ def check_cp_output_path():
                     # return [i,i.base_path]
                 # print(i.base_path)
                 # print(i.name)
-        return nodes
+        if len(nodes):
+            return nodes
+        else:
+            return False
     else:
         return False
 def check_pn_output_path():
     '''没有时返回False'''
     filepath=bpy.context.scene.render.filepath
-    if filepath == '/tmp\\':
-        return 'C://' + filepath
+    if filepath[:5] == '/tmp\\':
+        filepath.replace("\\", "/")
+        # print(filepath)
+        # print(os.path.isdir(filepath))
+        # print(os.path.isdir('C:' + filepath))
+        return 'C:' + filepath
     elif filepath == '':
         return False
     else:
+        # print(filepath,os.path.isdir(filepath))
         return filepath
 def get_file_extension():
     '''获取输出节点的文件格式字符串.xxx else None 返回ext{'节点名':后缀名}'''
@@ -119,28 +127,36 @@ class Process_images(bpy.types.Operator):
             #     image_path = check_cp_output_path()[1] + 'Image' + str(10000 + num)[1:] + get_file_extension()
             # elif extension == get_file_extension():
             #     image_path = check_cp_output_path()[1]
+            if not len(image_path):
+                self.report({'WARNING'}, "Set the output node image path first")
+                return {'CANCELLED'}
         elif check_pn_output_path():
             base_name, extension = os.path.splitext(check_pn_output_path())
             if os.path.isdir(check_pn_output_path()):
-                path = check_pn_output_path() + 'Image' + str(10000 + num)[
+                path = check_pn_output_path() +'/'+ 'Image' + str(10000 + num)[
                                                                 1:] + bpy.context.scene.render.file_extension
             elif extension == bpy.context.scene.render.file_extension:
                 path = check_pn_output_path()
-            image_path.append(path)
+            try:
+                image_path.append(path)
+            except:
+                self.report({'WARNING'}, "The output path format is unrecognizable, please check the output path")
+                return {'CANCELLED'}
         else:
             # print('先设置图片路径')
-            self.report({'WARNING'}, "先设置图片路径")
+            self.report({'WARNING'}, "Set the image path first")
             return {'CANCELLED'}
         ps = bpy.context.scene.my_custom_properties
         # 设置想要的DPI值
         new_dpi = (ps.dpi, ps.dpi)
         for i in image_path:
             if not check_cp_output_path():
+                '''合成节点不需要保存图片'''
                 image = bpy.data.images['Render Result']
                 try:
                     image.save_render(filepath=i)
                 except:
-                    print('图片保存失败')
+                    print("Failed to save the image")
 
             # 缩放
             if ps.adaptive_scale or ps.method == 'Simple':
