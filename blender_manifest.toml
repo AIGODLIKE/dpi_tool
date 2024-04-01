@@ -1,9 +1,9 @@
-schema_version = "1.0.2"
+schema_version = "1.0.3"
 
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "DPI_tool"
-version = "1.0.2"
+version = "1.0.3"
 name = "DPI tool"
 tagline = "Setting the DPI of an image in Blender"
 maintainer = "Cupcko <649730016@qq.com>"
@@ -24,7 +24,7 @@ permissions = ["files", "network"]
 # https://docs.blender.org/manual/en/dev/extensions/tags.html
 tags = ["Render"]
 
-blender_version_min = "3.4.0"
+blender_version_min = "4.2.0"
 # Optional: maximum supported Blender version
 # blender_version_max = "5.1.0"
 
