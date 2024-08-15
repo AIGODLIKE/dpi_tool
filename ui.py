@@ -1,19 +1,8 @@
-
 import bpy
-from .ops import Install_pillow_ops,SetRenderBox,Switch_w_h
+from .ops import SetRenderBox,Switch_w_h
+from pathlib import Path
+from bpy.app.translations import pgettext as _
 
-# 定义插件的首选项类
-class Install_pillow_ui(bpy.types.AddonPreferences):
-    bl_idname = __package__
-
-    def draw(self, context):
-        layout = self.layout
-        try:
-            from PIL import Image
-            layout.label(text="The required dependencies have been installed, please restart Blender")
-        except:
-            layout.label(text="Please install the dependencies required by the plugin first, restart Blender after installation is complete")
-            layout.operator(Install_pillow_ops.bl_idname, text="Install the Pillow library")
 def sna_add_to_render_pt_format_E810E(self, context):
     if not (False):
         ps = bpy.context.scene.my_custom_properties
@@ -179,15 +168,16 @@ def sna_add_to_render_pt_format_E810E(self, context):
                 note.label(text='Please add an output node and set the output path')
 
         elif filepath=='/tmp\\':
-            note.label(text='The output path is in c:/tmp/')
-        elif filepath=='':
+            note.label(text=_('The output path is in {}tmp\\').format(Path.home().anchor))
+        elif not Path(filepath).is_dir():
             note.label(text='Please set the output path')
 
 # 注册和注销函数
 def register():
     bpy.types.RENDER_PT_format.append(sna_add_to_render_pt_format_E810E)
-    bpy.utils.register_class(Install_pillow_ui)
+    # bpy.utils.register_class(Install_pillow_ui)
 
 def unregister():
     bpy.types.RENDER_PT_format.remove(sna_add_to_render_pt_format_E810E)
-    bpy.utils.unregister_class(Install_pillow_ui)
+    # bpy.utils.unregister_class(Install_pillow_ui)
+# 

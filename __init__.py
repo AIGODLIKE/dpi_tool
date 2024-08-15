@@ -4,8 +4,8 @@ bl_info = {
     "name" : "DPI_tool",
     "author" : "AIGODLIKE Community:cupcko",
     "description" : "",
-    "blender" : (3, 0, 0),
-    "version" : (1, 0, 3),
+    "blender" : (4, 2, 0),
+    "version" : (1, 0, 4),
     "location" : "",
     "warning" : "",
     "doc_url": "",
@@ -13,7 +13,7 @@ bl_info = {
     "category" : "render"
 }
 import bpy
-
+import platform
 def render_complete(scene):
     ps = bpy.context.scene.my_custom_properties
     if ps.switch:
@@ -66,6 +66,10 @@ Dpi_toolzh_HANS = TranslationHelper('Dpi_toolzh_HANS', zh_CN.data, lang='zh_HANS
 
 from . import prop,ops,ui
 def register():
+    os_name = platform.system()
+    if os_name != "Windows":
+        print("Only supports Windows systems.")
+        return False
     if bpy.app.version < (4, 0, 0):
         Dpi_toolzh_CN.register()
     else:
@@ -80,6 +84,10 @@ def register():
 
 
 def unregister():
+    os_name = platform.system()
+    if os_name != "Windows":
+        print("Only supports Windows systems.")
+        return False
     if bpy.app.version < (4, 0, 0):
         Dpi_toolzh_CN.unregister()
     else:

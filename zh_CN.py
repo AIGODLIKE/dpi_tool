@@ -33,7 +33,8 @@ data = {
     "Proportional scaling": '等比自适应',
     "Force synchronization": '强制同步',
     "Please save the file first and set the output path": '请先保存文件,并设置输出路径',
-    "The output path is in c:/tmp/": '输出路径在c:/tmp/',
+    "The output path is in c:/tmp\\": '输出路径在c:\\tmp\\',
+    "The output path is in {}tmp\\": '输出路径在{}tmp\\',
     "The output path is in the current file directory": '输出路径在当前文件目录',
     "Please add an output node and set the output path": '请添加输出节点并设置输出路径',
     "Please set the output path": '请设置输出路径',
@@ -41,6 +42,7 @@ data = {
     'AIGODLIKE Community:cupcko': '幻之境：cupcko',
     "Failed to save the image": '图片保存失败',
     "Set the image path first": '先设置图片路径',
+    'Only supports Windows systems.':'只支持windows系统',
     "Set the output node image path first": '先设置输出节点图片路径',
     "The output path format is unrecognizable, please check the output path": '输出路径格式无法识别,请检查输出路径',
 }
