@@ -1,5 +1,8 @@
 # dpi_tool
  Setting the DPI of an image in Blender
+
+https://github.com/user-attachments/assets/80cfcbdb-b8a9-448e-9049-6e259ae85f6a
+
 ## catalog目录
 
 -   [ ] [Install plugin安装插件](#安装插件)
