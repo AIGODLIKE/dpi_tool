@@ -1,9 +1,8 @@
-schema_version = "1.0.4"
-
+schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "DPI_tool"
-version = "1.0.4"
+version = "1.0.5"
 name = "DPI tool"
 tagline = "Setting the DPI of an image in Blender"
 maintainer = "Cupcko <649730016@qq.com>"
@@ -15,8 +14,9 @@ type = "add-on"
 # * "network" (for internet access)
 # * "camera" (to capture photos and videos)
 # * "microphone" (to capture audio)
-permissions = ["files"]
-
+#[permissions]
+# network = "Need to sync motion-capture data to server"
+#files = "Change /the DPI attribute of the image."
 # Optional link to documentation, support, source files, etc
  website = "https://github.com/AIGODLIKE/dpi_tool"
 
@@ -31,7 +31,7 @@ blender_version_min = "4.2.0"
 # License conforming to https://spdx.org/licenses/ (use "SPDX: prefix)
 # https://docs.blender.org/manual/en/dev/extensions/licenses.html
 license = [
-  "SPDX:GPL-2.0-or-later",
+  "SPDX:GPL-3.0-or-later",
 ]
 # Optional: required by some licenses.
 copyright = [

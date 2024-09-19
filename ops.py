@@ -1,10 +1,6 @@
 import bpy,subprocess,sys,os
 import numpy as np
 from bpy.types import Operator
-
-
-# # 调用函数检查Pillow是否安装
-# if check_pillow_installed():
 from .extern.PIL import Image
 # 更改DPI的函数
 def change_image_dpi(image_path, new_dpi=(300, 300)):
@@ -197,9 +193,8 @@ def register():
     bpy.utils.register_class(Switch_w_h)
     bpy.utils.register_class(Process_images)
     bpy.utils.register_class(SetRenderBox)
-    # bpy.utils.register_class(Install_pillow_ops)
+
 def unregister():
     bpy.utils.unregister_class(Switch_w_h)
     bpy.utils.unregister_class(Process_images)
     bpy.utils.unregister_class(SetRenderBox)
-    # bpy.utils.unregister_class(Install_pillow_ops)

@@ -5,7 +5,7 @@ bl_info = {
     "author" : "AIGODLIKE Community:cupcko",
     "description" : "",
     "blender" : (4, 2, 0),
-    "version" : (1, 0, 4),
+    "version" : (1, 0, 5),
     "location" : "",
     "warning" : "",
     "doc_url": "",
